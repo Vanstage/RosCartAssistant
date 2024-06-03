@@ -1,0 +1,8 @@
+prefix=/home/mustar/RosCartAssistant/devel
+
+Name: price_checker
+Description: Description of price_checker
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

@@ -1,0 +1,2 @@
+shopping_cart_assistant
+-DCATKIN_DEVEL_PREFIX=/home/mustar/RosCartAssistant/devel -DCMAKE_INSTALL_PREFIX=/home/mustar/RosCartAssistant/install -G Unix Makefiles

@@ -1,0 +1,8 @@
+prefix=/home/mustar/RosCartAssistant/install
+
+Name: shopping_cart_assistant
+Description: Description of shopping_cart_assistant
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
