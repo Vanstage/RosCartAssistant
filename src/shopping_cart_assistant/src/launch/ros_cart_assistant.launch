@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<launch>
+  <!-- Console launch prefix -->
+  <arg name="launch_prefix" default=""/>
+  
+  <!-- Model folder -->
+  <arg name="yolo_model_folder" default="$(find robot_vision_openvino)/models/yolov3"/>
+
+  <!-- Load ROS parameters -->
+  <rosparam file="$(find robot_vision_openvino)/config/ros.yaml" command="load" ns="yolo_ros" />
+  <rosparam file="$(find robot_vision_openvino)/config/yolov3.yaml" command="load" ns="yolo_ros" />
+
+  <!-- Start USB camera node -->
+  <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" respawn="true">
+    <param name="video_device" value="/dev/video0" />
+    <param name="image_width" value="640" />
+    <param name="image_height" value="480" />
+    <param name="pixel_format" value="yuyv" />
+    <param name="camera_frame_id" value="usb_cam" />
+  </node>
+
+  <!-- Start OpenVINO YOLO node -->
+  <node pkg="robot_vision_openvino" type="yolo_ros" name="yolo_ros" output="screen" launch-prefix="$(arg launch_prefix)">
+    <param name="yolo_model/folder" value="$(arg yolo_model_folder)" />
+  </node>
+
+  <!-- Start image viewer node -->
+  <node name="image_viewer" type="image_viewer.py" pkg="shopping_cart_assistant" output="screen" launch-prefix="$(arg launch_prefix)" />
+</launch>

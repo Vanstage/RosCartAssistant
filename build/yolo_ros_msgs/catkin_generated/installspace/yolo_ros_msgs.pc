@@ -1,0 +1,8 @@
+prefix=/home/mustar/RosCartAssistant/install
+
+Name: yolo_ros_msgs
+Description: Description of yolo_ros_msgs
+Version: 0.0.0
+Cflags: -I${prefix}/include
+Libs: -L${prefix}/lib 
+Requires: actionlib_msgs geometry_msgs sensor_msgs message_runtime std_msgs

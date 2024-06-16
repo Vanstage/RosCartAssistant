@@ -1,13 +1,21 @@
 #!/usr/bin/env python
-import cv2
+
 import rospy
 from sensor_msgs.msg import Image
+from std_msgs.msg import String
 from cv_bridge import CvBridge, CvBridgeError
+from yolo_ros_msgs.msg import BoundingBoxes
+
+
 
 class ImageViewer:
     def __init__(self):
+        rospy.init_node('image_viewer', anonymous=True)
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber("/usb_cam/image_raw", Image, self.image_callback)
+        self.obj_sub = rospy.Subscriber("/yolo_ros/bounding_boxes", BoundingBoxes, self.object_detection_callback)
+        self.obj_pub = rospy.Publisher('input', String, queue_size=10)
+        self.detected_objects = []
 
     def image_callback(self, data):
         try:
@@ -15,24 +23,33 @@ class ImageViewer:
         except CvBridgeError as e:
             rospy.logerr(e)
             return
+        
+       
+        # Process image here if needed, e.g., drawing rectangles and labels
 
-        # Example bounding box coordinates obtained from YOLO
-        bounding_boxes = [(100, 100, 50, 50), (200, 200, 30, 30)]  # Example coordinates
+    def object_detection_callback(self, data):
+        self.detected_objects = []
+        
+        for box in data.bounding_boxes:
+            x = box.xmin
+            y = box.ymin
+            w = box.xmax - box.xmin
+            h = box.ymax - box.ymin
+            label = box.Class
+            self.detected_objects.append((x, y, w, h, label))
+        
+        # Publish detected object labels as a single string
+        detected_labels = [label for (_, _, _, _, label) in self.detected_objects]
+        if detected_labels:
+            rospy.loginfo("Detected objects: %s", detected_labels)
+            label_string = ", ".join(detected_labels)
+            self.obj_pub.publish(label_string)
+        else:
+            rospy.loginfo("No objects detected.")
 
-        # Draw rectangles on the image for each bounding box
-        for box in bounding_boxes:
-            x, y, w, h = box
-            cv2.rectangle(cv_image, (x, y), (x + w, y + h), (0, 255, 0), 2)  # Green rectangle with thickness 2
-
-        # Display the image with rectangles
-        cv2.imshow("Image with Rectangles", cv_image)
-        cv2.waitKey(1)
+    def run(self):
+        rospy.spin()
 
 if __name__ == '__main__':
-    rospy.init_node('image_viewer', anonymous=True)
     iv = ImageViewer()
-    try:
-        rospy.spin()
-    except KeyboardInterrupt:
-        rospy.loginfo("Shutting down")
-        cv2.destroyAllWindows()
+    iv.run()

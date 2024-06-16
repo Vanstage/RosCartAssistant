@@ -1,2 +1,2 @@
-shopping_cart_assistant
+darknet_ros/darknet_ros:darknet_ros/darknet_ros_msgs:shopping_cart_assistant:yolo_ros_msgs
 -DCATKIN_DEVEL_PREFIX=/home/mustar/RosCartAssistant/devel -DCMAKE_INSTALL_PREFIX=/home/mustar/RosCartAssistant/install -G Unix Makefiles
