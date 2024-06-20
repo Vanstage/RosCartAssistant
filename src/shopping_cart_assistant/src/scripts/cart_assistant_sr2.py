@@ -4,7 +4,7 @@ from std_msgs.msg import String
 import speech_recognition as sr
 
 def keyword_listener(recognizer, microphone):
-    #Continuously listen for the keyword "add to cart".
+    # Continuously listen for the keyword "add to cart".
     with microphone as source:
         recognizer.adjust_for_ambient_noise(source)
         print(">>> Listening for keyword 'add to cart'")
