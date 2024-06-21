@@ -16,6 +16,8 @@ class ImageViewer:
         self.obj_sub = rospy.Subscriber("/yolo_ros/bounding_boxes", BoundingBoxes, self.object_detection_callback)
         self.obj_pub = rospy.Publisher('input', String, queue_size=10)
         self.detected_objects = []
+        self.no_object_timer = None
+        self.no_object_timeout = rospy.Duration(10)  # Timeout duration in seconds
 
     def image_callback(self, data):
         try:
@@ -41,11 +43,22 @@ class ImageViewer:
         # Publish detected object labels as a single string
         detected_labels = [label for (_, _, _, _, label) in self.detected_objects]
         if detected_labels:
-            rospy.loginfo("Detected objects: %s", detected_labels)
-            label_string = ", ".join(detected_labels)
+            label_string = ",".join(detected_labels)
             self.obj_pub.publish(label_string)
+            rospy.loginfo("detected_labels : %s.", detected_labels)
+            detected_labels = []
+            # Cancel any existing no object timer
+            if self.no_object_timer:
+                self.no_object_timer.shutdown()
         else:
             rospy.loginfo("No objects detected.")
+            if not self.no_object_timer:
+                self.no_object_timer = rospy.Timer(self.no_object_timeout, self.no_object_timeout_callback, oneshot=True)
+
+    def no_object_timeout_callback(self, event):
+        rospy.loginfo("No objects detected.")
+        self.obj_pub.publish("No objects detected.")
+        self.no_object_timer = None  # Reset the timer
 
     def run(self):
         rospy.spin()

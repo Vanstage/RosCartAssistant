@@ -19,11 +19,19 @@
     <param name="camera_frame_id" value="usb_cam" />
   </node>
 
-  <!-- Start OpenVINO YOLO node -->
-  <node pkg="robot_vision_openvino" type="yolo_ros" name="yolo_ros" output="screen" launch-prefix="$(arg launch_prefix)">
+  <!-- Start OpenVINO YOLO node in a new xterm terminal -->
+  <node name="yolo_ros" pkg="robot_vision_openvino" type="yolo_ros" output="screen" launch-prefix="xterm -e" args="$(arg launch_prefix)">
     <param name="yolo_model/folder" value="$(arg yolo_model_folder)" />
   </node>
 
-  <!-- Start image viewer node -->
-  <node name="image_viewer" type="image_viewer.py" pkg="shopping_cart_assistant" output="screen" launch-prefix="$(arg launch_prefix)" />
+  <!-- Start image viewer node in a new xterm terminal -->
+  <!-- <node name="image_viewer" pkg="shopping_cart_assistant" type="image_viewer.py" args="$(arg launch_prefix)" /> -->
+  <node name="image_viewer" pkg="shopping_cart_assistant" type="image_viewer.py" output="screen" launch-prefix="xterm -e" args="$(arg launch_prefix)" />
+
+  
+  <!-- Start speech recognition node in a new xterm terminal -->
+  <node name="cart_assistant_sr" pkg="shopping_cart_assistant" type="cart_assistant_sr.py" output="screen" launch-prefix="xterm -e" args="$(arg launch_prefix)" />
+
+  <!-- Start text-to-speech (TTS) node in a new xterm terminal -->
+  <node name="tts_node" pkg="shopping_cart_assistant" type="cart_assistant_tts.py" output="screen" launch-prefix="xterm -e" args="$(arg launch_prefix)" />
 </launch>
