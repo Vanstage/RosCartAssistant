@@ -8,26 +8,26 @@ from price_list import price_dict
 class SpeechRecognitionNode:
     def __init__(self):
         rospy.init_node('speech_recognition_node', anonymous=True)
-        self.pub_tts = rospy.Publisher('result', String, queue_size=10)
-        self.pub_cart = rospy.Publisher('cart', String, queue_size=10)
+        self.pub_tts = rospy.Publisher('sr_result', String, queue_size=10)
+        self.pub_cart = rospy.Publisher('cart_content', String, queue_size=10)
         self.cart = []
         self.detected_objects = []
         self.repeat_speech = ""
         self.price_dict = price_dict
 
-        rospy.Subscriber('input', String, self.object_detection_callback)
+        rospy.Subscriber('image_detection_result', String, self.object_detection_callback)
         self.recognizer = sr.Recognizer()
 
     def object_detection_callback(self, data):
         detected_labels = data.data.split(",")
         
-        # Store detected objects for later use
+ 
         if "No objects detected." in detected_labels:
             rospy.loginfo("No objects detected.")
             self.pub_tts.publish("Please place an object in front of the camera")
         else:
             # rospy.loginfo("Detected objects: %s", detected_labels)
-            self.detected_objects = detected_labels  # Update detected objects
+            self.detected_objects = detected_labels  
 
     def listen_for_commands(self):
         while not rospy.is_shutdown():
@@ -51,7 +51,7 @@ class SpeechRecognitionNode:
                 self.detected_objects = []
             else:
                 rospy.loginfo("Waiting for new detected objects...")
-                rospy.sleep(1)  # Wait for 1 second before checking again
+                rospy.sleep(1)  
 
     def handle_speech_result(self, result):
         if "price" in result.lower():
@@ -71,13 +71,14 @@ class SpeechRecognitionNode:
                     self.cart.append(obj)
                     cart_content = ','.join(self.cart)
                     self.pub_cart.publish(cart_content)
-                    self.pub_tts.publish("Items added to cart")
+            self.pub_tts.publish("Items added to cart")
         
         elif "list item" in result.lower():
             if self.cart:
                 cart_content = ','.join(self.cart)
                 self.pub_cart.publish(cart_content)
                 cart_text = "Items in your cart: {}".format(', '.join(self.cart))
+                self.repeat_speech = cart_text
                 self.pub_tts.publish(cart_text)
             else:
                 self.pub_tts.publish("Your cart is empty")
@@ -89,6 +90,7 @@ class SpeechRecognitionNode:
                 total_price += self.price_dict.get(item, 0)
 
             total_text = "Total price of items in your cart is ${:.2f}".format(total_price)
+            self.repeat_speech = total_text
             self.pub_tts.publish(total_text)
            
 

@@ -16,8 +16,8 @@ class ImageViewer:
         self.bridge = CvBridge()
         self.image_sub = rospy.Subscriber("/usb_cam/image_raw", Image, self.image_callback)
         self.obj_sub = rospy.Subscriber("/yolo_ros/bounding_boxes", BoundingBoxes, self.object_detection_callback)
-        self.obj_pub = rospy.Publisher('input', String, queue_size=10)
-        self.cart_sub = rospy.Subscriber("/cart", String, self.cart_callback)
+        self.obj_pub = rospy.Publisher('/image_detection_result', String, queue_size=10)
+        self.cart_sub = rospy.Subscriber("/cart_content", String, self.cart_callback)
        
         self.detected_objects = []
         self.no_object_timer = None
@@ -116,7 +116,6 @@ class ImageViewer:
 
 
     def get_price(self, label):
-        # Example function to fetch price based on label
         return self.price_dict.get(label, "unknown")
 
     def no_object_timeout_callback(self, event):
