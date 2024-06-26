@@ -21,11 +21,11 @@ RosCartAssistant
 
 This project was developed in Jupiter IO - Juno robot with preconfig and preinstalled OpenVINO Yolo model. To run this project, you need the following software installed on your Linux system (Ubuntu 18.04 and ROS Melodic):
 
-<!-- - ROS (Robot Operating System): Install the version compatible with your system. Follow the official installation guide. -->
-<!-- - OpenVINO: For running the YOLO model. Follow the installation guide. -->
-<!-- - USB Camera Driver: Ensure the usb_cam package is installed. -->
-<!-- - Python Dependencies: Install required Python packages. -->
-<!-- - xterm: Ensure xterm is installed for launching nodes in new terminal windows. -->
+- ROS (Robot Operating System): Ubuntu 18.04
+- OpenVINO: For running the YOLO model. Follow the installation guide.
+- USB Camera Driver: Ensure the usb_cam package is installed. 
+- Python Dependencies: Install required Python packages. 
+- xterm: Ensure xterm is installed for launching nodes in new terminal windows.
 
 You can install the required ROS packages and dependencies using the following commands:
 
