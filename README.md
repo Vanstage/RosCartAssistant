@@ -24,12 +24,14 @@ sudo apt update
 sudo apt install ros-melodic-usb-cam
 sudo apt install xterm
 pip install -r requirements.txt # Make sure you have a requirements.txt with the necessary Python packages
+sudo apt install mpg321
 ```
 
 If you are using the Jupiter Juno  robot, just install the  Python requirements using the following command:
 
 ```sh
 pip install -r requirements.txt # Make sure you have a requirements.txt with the necessary Python packages
+sudo apt install mpg321
 ```
 
 Installation
