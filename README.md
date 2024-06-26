@@ -5,17 +5,7 @@ Robotics development to assist the elderly.
 
 RosCartAssistant is a project that utilizes ROS (Robot Operating System) for a shopping cart assistant. This README provides instructions on how to set up and run the project.
 
-Folder Structure
-```
-RosCartAssistant
-├── devel
-├── build
-└── src
-└── shopping_cart_assistant
-└── src
-├── launch
-└── scripts
-```
+
 
 ## Requirements
 
