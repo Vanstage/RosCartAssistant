@@ -7,12 +7,12 @@
   <arg name="yolo_model_folder" default="$(find robot_vision_openvino)/models/yolov3"/>
 
   <!-- Load ROS parameters -->
-  <rosparam file="$(find robot_vision_openvino)/config/ros.yaml" command="load" ns="yolo_ros" />
+  <!-- <rosparam file="$(find robot_vision_openvino)/config/ros.yaml" command="load" ns="yolo_ros" /> -->
   <rosparam file="$(find robot_vision_openvino)/config/yolov3.yaml" command="load" ns="yolo_ros" />
 
   <!-- Start USB camera node -->
   <node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" respawn="true">
-    <param name="video_device" value="/dev/video0" />
+    <param name="video_device" value="/dev/video2" />
     <param name="image_width" value="640" />
     <param name="image_height" value="480" />
     <param name="pixel_format" value="yuyv" />
@@ -25,13 +25,12 @@
   </node>
 
   <!-- Start image viewer node in a new xterm terminal -->
-  <!-- <node name="image_viewer" pkg="shopping_cart_assistant" type="image_viewer.py" args="$(arg launch_prefix)" /> -->
   <node name="image_viewer" pkg="shopping_cart_assistant" type="image_viewer.py" output="screen" launch-prefix="xterm -e" args="$(arg launch_prefix)" />
 
   
   <!-- Start speech recognition node in a new xterm terminal -->
-  <node name="cart_assistant_sr" pkg="shopping_cart_assistant" type="cart_assistant_sr.py" output="screen" launch-prefix="xterm -e" args="$(arg launch_prefix)" />
+  <node name="cart_assistant_sr_node" pkg="shopping_cart_assistant" type="cart_assistant_sr.py" output="screen" launch-prefix="xterm -e" args="$(arg launch_prefix)" />
 
   <!-- Start text-to-speech (TTS) node in a new xterm terminal -->
-  <node name="tts_node" pkg="shopping_cart_assistant" type="cart_assistant_tts.py" output="screen" launch-prefix="xterm -e" args="$(arg launch_prefix)" />
+  <node name="cart_assistant_tts_node" pkg="shopping_cart_assistant" type="cart_assistant_tts.py" output="screen" launch-prefix="xterm -e" args="$(arg launch_prefix)" />
 </launch>

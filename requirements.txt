@@ -1,0 +1,4 @@
+gTTS
+opencv-python
+cv_bridge
+SpeechRecognition
