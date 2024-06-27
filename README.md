@@ -46,6 +46,7 @@ source devel/setup.bash
 ```
 
 Running the Launch File
+
 To run the project, launch the provided launch file. This will start all the necessary nodes for the shopping cart assistant.
 
 ```sh
