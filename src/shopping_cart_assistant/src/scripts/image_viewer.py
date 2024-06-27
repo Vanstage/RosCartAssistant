@@ -23,10 +23,12 @@ class ImageViewer:
         # Initialize variables for detected objects, cart contents, and cart total
         self.detected_objects = []
         self.no_object_timer = None
-        self.no_object_timeout = rospy.Duration(10)  # Timeout duration in seconds
+        self.no_object_timeout = rospy.Duration(20)  # Timeout duration in seconds
         self.price_dict = price_dict
         self.cart_contents = ""
         self.cart_total = "Total: $0"
+        self.no_response_timeout = rospy.Duration(300) 
+        self.no_response_timer = None  
 
     def image_callback(self, data):
         try:
@@ -39,8 +41,8 @@ class ImageViewer:
             for (x, y, w, h, label) in self.detected_objects:
                 cv2.rectangle(cv_image, (x, y), (x + w, y + h), (255, 0, 0), 2)  # Draw bounding box
                 price = self.get_price(label)
-                if price == "unknown":
-                    text = "{}: ${:.2f}".format(label, price)
+                if "unknown" == price:
+                    text = "{}: ${}".format(label, price)
                 else:
                     text = "{}: ${:.2f}".format(label, price)
                     cv2.putText(cv_image, text, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2, cv2.LINE_AA)
@@ -51,7 +53,7 @@ class ImageViewer:
         cv2.putText(cv_image, total_text, total_position, cv2.FONT_HERSHEY_SIMPLEX, 0.7, (255, 255, 255), 2, cv2.LINE_AA)
         
         if self.cart_contents:
-            if self.cart_total != "$0":
+            if self.cart_total != "Total: $0":
                 cv2.putText(cv_image, "Cart Contents:", (10, 80), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2, cv2.LINE_AA)
                 items = self.cart_contents.split(',')
                 index = 0
@@ -90,7 +92,10 @@ class ImageViewer:
             w = box.xmax - box.xmin
             h = box.ymax - box.ymin
             label = box.Class
-            self.detected_objects.append((x, y, w, h, label))
+            if "person" in label:
+                continue
+            if label in price_dict:
+                self.detected_objects.append((x, y, w, h, label))
         
         # Publish detected object labels as a single string
         detected_labels = [label for (_, _, _, _, label) in self.detected_objects]
@@ -101,11 +106,14 @@ class ImageViewer:
             # Cancel any existing no object timer
             if self.no_object_timer:
                 self.no_object_timer.shutdown()
-            self.no_object_timer = None
+                self.no_object_timer = None
+            
         else:
             rospy.loginfo("No objects detected.")
             if not self.no_object_timer:
                 self.no_object_timer = rospy.Timer(self.no_object_timeout, self.no_object_timeout_callback)
+            if not self.no_response_timer:
+                self.no_response_timer = rospy.Timer(self.no_response_timeout, self.no_respond_timeout_callback)    
 
     def get_price(self, label):
         return self.price_dict.get(label, "unknown")  # Retrieve price from price dictionary
@@ -113,8 +121,21 @@ class ImageViewer:
     def no_object_timeout_callback(self, event):
         rospy.loginfo("No objects detected.")
         self.obj_pub.publish("No objects detected.")
-        self.no_object_timer = None  # Reset the timer
+        self.check_input_timer()
 
+    def no_respond_timeout_callback(self, event):
+        rospy.loginfo("Thank you for using me")
+        self.obj_pub.publish("Thank you for using me")
+        self.check_input_timer()
+        self.no_response_timer.shutdown()
+        self.no_response_timer = None  # Reset the timer
+
+    def check_input_timer(self):
+        if self.no_object_timer:
+            # Shutdown existing input timer if exist
+            self.no_object_timer.shutdown()  
+            # Reset input timer 
+            self.no_object_timer = None  
     def run(self):
         rospy.spin()  # ROS main loop
 

@@ -7,7 +7,7 @@
   <arg name="yolo_model_folder" default="$(find robot_vision_openvino)/models/yolov3"/>
 
   <!-- Load ROS parameters -->
-  <!-- <rosparam file="$(find robot_vision_openvino)/config/ros.yaml" command="load" ns="yolo_ros" /> -->
+  <rosparam file="$(find robot_vision_openvino)/config/ros.yaml" command="load" ns="yolo_ros" /> 
   <rosparam file="$(find robot_vision_openvino)/config/yolov3.yaml" command="load" ns="yolo_ros" />
 
   <!-- Start USB camera node -->

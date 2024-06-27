@@ -18,13 +18,14 @@ class SpeechRecognitionNode:
         # Load price dictionary from external module
         self.price_dict = price_dict 
         # Timer for no input timeout
-        self.no_input_timer = None  
+        self.no_input_timer = None 
         # Timeout duration in seconds
-        self.no_input_timeout = rospy.Duration(10)  
+        self.no_input_timeout = rospy.Duration(30) 
         # Subscribe to object detection results
         rospy.Subscriber('image_detection_result', String, self.object_detection_callback)  
         # Initialize speech recognizer
-        self.recognizer = sr.Recognizer()  
+        self.recognizer = sr.Recognizer() 
+        self.end_process = False 
 
     def object_detection_callback(self, data):
         detected_labels = data.data.split(",") 
@@ -33,7 +34,14 @@ class SpeechRecognitionNode:
         if "No objects detected." in detected_labels:
             rospy.loginfo("No objects detected.")
             # Publish TTS message if no object detected
-            self.pub_tts.publish("Please place an object in front of the camera")  
+            self.pub_tts.publish("Please place an object in front of the camera")
+        elif "Thank you for using me" in detected_labels:
+            if not self.end_process:
+                self.handle_speech_result("total")
+                self.handle_speech_result("done")
+                self.end_process = True
+
+
         else:
             # Start no input timer if not already started, this timer run until user input something 
             # If no input in 10 seconds, no_input_timeout_callback will be called
@@ -70,11 +78,11 @@ class SpeechRecognitionNode:
                 rospy.sleep(1) 
 
     def no_input_timeout_callback(self, event):
-        # Prompt for user action
         text = "Do you like to place the item in your cart?"  
-        rospy.loginfo(text)  
-        self.handle_speech_result(text)  # Process prompt action
-        self.no_input_timer = None  # Reset the timer
+        rospy.loginfo(text)
+        self.repeat_speech = text
+        self.pub_tts.publish(text)
+        self.check_input_timer()
 
     def handle_speech_result(self, result):
         if "price" in result.lower():
@@ -103,7 +111,7 @@ class SpeechRecognitionNode:
             for obj in self.detected_objects[:5]:
                 if obj in self.price_dict:
                     self.cart.append(obj)  # Add object to cart list
-                    cart_content = ','.join(self.cart)  # Format cart content as string
+                    cart_content = ','.join(self.cart)  
                     # Publish updated cart content
                     self.pub_cart.publish(cart_content)  
             # Publish confirmation message
@@ -130,15 +138,20 @@ class SpeechRecognitionNode:
                 # Sum prices from price dictionary
                 total_price += self.price_dict.get(item, 0) 
 
-            total_text = "Total price of items in your cart is ${:.2f}".format(total_price)  
-            self.repeat_speech = total_text  
+
+            total_text = "Total price of items in your cart is ${:.2f}".format(total_price)
+            self.pub_tts.publish(total_text)
+            if total_price == 0:
+                total_text = "Your cart is empty"
+                self.repeat_speech = total_text 
+             
             # Publish total price
             self.pub_tts.publish(total_text)  
         elif "done" in result.lower():
             # Publish completion message
-            self.pub_tts.publish("Your items have been added to the cart. Thank you!")  
+            self.pub_tts.publish("Thank you for using me!")  
         else:
-             # Handle unrecognized speech
+            # Handle unrecognized speech
             self.pub_tts.publish("I did not understand that. Please repeat.") 
 
     def check_input_timer(self):
