@@ -15,9 +15,12 @@ class SpeechRecognitionNode:
         self.cart = []
         self.detected_objects = [] 
         self.repeat_speech = ""  
-        self.price_dict = price_dict  # Load price dictionary from external module
-        self.no_input_timer = None  # Timer for no input timeout
-        self.no_input_timeout = rospy.Duration(10)  # Timeout duration in seconds
+        # Load price dictionary from external module
+        self.price_dict = price_dict 
+        # Timer for no input timeout
+        self.no_input_timer = None  
+        # Timeout duration in seconds
+        self.no_input_timeout = rospy.Duration(10)  
         # Subscribe to object detection results
         rospy.Subscriber('image_detection_result', String, self.object_detection_callback)  
         # Initialize speech recognizer
@@ -64,7 +67,7 @@ class SpeechRecognitionNode:
                 if not self.no_input_timer:
                     self.no_input_timer = rospy.Timer(self.no_input_timeout, self.no_input_timeout_callback)
                 rospy.loginfo("Waiting for new detected objects...")
-                rospy.sleep(1)  # Sleep briefly while waiting for new objects
+                rospy.sleep(1) 
 
     def no_input_timeout_callback(self, event):
         # Prompt for user action
@@ -101,45 +104,57 @@ class SpeechRecognitionNode:
                 if obj in self.price_dict:
                     self.cart.append(obj)  # Add object to cart list
                     cart_content = ','.join(self.cart)  # Format cart content as string
-                    self.pub_cart.publish(cart_content)  # Publish updated cart content
-            self.pub_tts.publish("Items added to cart")  # Publish confirmation message
+                    # Publish updated cart content
+                    self.pub_cart.publish(cart_content)  
+            # Publish confirmation message
+            self.pub_tts.publish("Items added to cart")  
         elif "list item" in result.lower():
             self.check_input_timer()  # Check and reset input timer
             # List items currently in cart
             if self.cart:
-                cart_content = ','.join(self.cart)  # Format cart content as string
-                self.pub_cart.publish(cart_content)  # Publish current cart content
-                cart_text = "Items in your cart: {}".format(', '.join(self.cart))  # Format cart response
-                self.repeat_speech = cart_text  # Store speech for potential repetition
-                self.pub_tts.publish(cart_text)  # Publish cart content
+                cart_content = ','.join(self.cart) 
+                # Publish current cart content
+                self.pub_cart.publish(cart_content)  
+                cart_text = "Items in your cart: {}".format(', '.join(self.cart)) 
+                self.repeat_speech = cart_text
+                # Publish cart content
+                self.pub_tts.publish(cart_text)  
             else:
-                self.pub_tts.publish("Your cart is empty")  # Handle empty cart scenario
+                # Handle empty cart scenario
+                self.pub_tts.publish("Your cart is empty") 
         elif "total" in result.lower():
-            self.check_input_timer()  # Check and reset input timer
+            self.check_input_timer() 
             # Calculate total price of items in cart
             total_price = 0.0
             for item in self.cart:
-                total_price += self.price_dict.get(item, 0)  # Sum prices from price dictionary
+                # Sum prices from price dictionary
+                total_price += self.price_dict.get(item, 0) 
 
-            total_text = "Total price of items in your cart is ${:.2f}".format(total_price)  # Format total price response
-            self.repeat_speech = total_text  # Store speech for potential repetition
-            self.pub_tts.publish(total_text)  # Publish total price
+            total_text = "Total price of items in your cart is ${:.2f}".format(total_price)  
+            self.repeat_speech = total_text  
+            # Publish total price
+            self.pub_tts.publish(total_text)  
         elif "done" in result.lower():
-            self.pub_tts.publish("Your items have been added to the cart. Thank you!")  # Publish completion message
+            # Publish completion message
+            self.pub_tts.publish("Your items have been added to the cart. Thank you!")  
         else:
-            self.pub_tts.publish("I did not understand that. Please repeat.")  # Handle unrecognized speech
+             # Handle unrecognized speech
+            self.pub_tts.publish("I did not understand that. Please repeat.") 
 
     def check_input_timer(self):
         if self.no_input_timer:
-            self.no_input_timer.shutdown()  # Shutdown existing input timer
-            self.no_input_timer = None  # Reset input timer
+            # Shutdown existing input timer if exist
+            self.no_input_timer.shutdown()  
+            # Reset input timer 
+            self.no_input_timer = None  
 
     def run(self):
-        self.listen_for_commands()  # Start listening for speech commands
+        # Start listening for speech commands
+        self.listen_for_commands()  
 
 if __name__ == '__main__':
     try:
         sr_node = SpeechRecognitionNode()
         sr_node.run()  # Run the speech recognition node
     except rospy.ROSInterruptException:
-        pass  # Handle ROS interrupt exception gracefully
+        pass  
