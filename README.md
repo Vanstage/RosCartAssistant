@@ -27,10 +27,10 @@ sudo apt install mpg321
 pip install -r requirements.txt # Make sure you have a requirements.txt with the necessary Python packages
 ```
 
-##Prototype Information
+## Prototype Information
 This cart assistant uses YOLOv3 from OpenVINO for object detection. The object detection results are used to interact with the cart system. Currently, the objects detected are general as it use pre-trained model existed in Jupiter Juno robot.
 
-##Installation
+## Installation
 Clone the repository:
 ```sh
 git clone https://github.com/Vanstage/RosCartAssistant.git
@@ -55,7 +55,7 @@ To run the project, launch the provided launch file. This will start all the nec
 roslaunch shopping_cart_assistant ros_cart_assistant.launch
 ```
 
-##Available Commands
+## Available Commands
 
 -**Price**: Inquire about the prices of detected objects.-
 -**Repeat**: Repeat the last spoken text.-
@@ -64,7 +64,7 @@ roslaunch shopping_cart_assistant ros_cart_assistant.launch
 -**Total**: Calculate the total price of items in the cart.-
 -**Done**: Finish cart assistant.-
 
-##Launch File
+## Launch File
 The launch file is used to start multiple nodes required for the cart assistant, including the USB camera node, YOLOv3 object detection node, image viewer node, speech recognition node, and text-to-speech node.
 
 Launch File: 'cart_assistant.launch':
