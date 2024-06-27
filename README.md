@@ -57,12 +57,12 @@ roslaunch shopping_cart_assistant ros_cart_assistant.launch
 
 ## Available Commands
 
--**Price**: Inquire about the prices of detected objects.-
--**Repeat**: Repeat the last spoken text.-
--**Add to Cart**: Add detected objects to the cart.-
--**List Item**: List items currently in the cart.-
--**Total**: Calculate the total price of items in the cart.-
--**Done**: Finish cart assistant.-
+- **Price**: Inquire about the prices of detected objects.
+- **Repeat**: Repeat the last spoken text.
+- **Add to Cart**: Add detected objects to the cart.
+- **List Item**: List items currently in the cart.
+- **Total**: Calculate the total price of items in the cart.
+- **Done**: Finish cart assistant.
 
 ## Launch File
 The launch file is used to start multiple nodes required for the cart assistant, including the USB camera node, YOLOv3 object detection node, image viewer node, speech recognition node, and text-to-speech node.
