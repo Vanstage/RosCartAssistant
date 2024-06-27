@@ -5,6 +5,8 @@ Robotics development to assist the elderly.
 
 RosCartAssistant is a project that utilizes ROS (Robot Operating System) for a shopping cart assistant prototype by utilise speech recognition and object detection. This README provides instructions on how to set up and run the project.
 
+## Prototype Information
+This cart assistant uses YOLOv3 from OpenVINO for object detection. The object detection results are used to interact with the cart system. Currently, the objects detected are general as it use pre-trained model existed in Jupiter Juno robot.
 
 ## Requirements
 
@@ -27,8 +29,6 @@ sudo apt install mpg321
 pip install -r requirements.txt # Make sure you have a requirements.txt with the necessary Python packages
 ```
 
-## Prototype Information
-This cart assistant uses YOLOv3 from OpenVINO for object detection. The object detection results are used to interact with the cart system. Currently, the objects detected are general as it use pre-trained model existed in Jupiter Juno robot.
 
 ## Installation
 Clone the repository:
