@@ -23,7 +23,7 @@ class ImageViewer:
         # Initialize variables for detected objects, cart contents, and cart total
         self.detected_objects = []
         self.no_object_timer = None
-        self.no_object_timeout = rospy.Duration(20)  # Timeout duration in seconds
+        self.no_object_timeout = rospy.Duration(20)  # Timeout duration in seconds if no object detected
         self.price_dict = price_dict
         self.cart_contents = ""
         self.cart_total = "Total: $0"
@@ -79,7 +79,7 @@ class ImageViewer:
             self.cart_total = "Total: $0"
 
     def display_image(self, image):
-        cv2.imshow("Image with Bounding Boxes", image)  # Display the image with bounding boxes
+        cv2.imshow("Cart Assistant", image)  # Display the image with bounding boxes
         cv2.waitKey(1)  # Refresh display
 
     def object_detection_callback(self, data):
