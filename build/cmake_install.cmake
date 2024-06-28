@@ -132,8 +132,6 @@ if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/mustar/RosCartAssistant/build/gtest/cmake_install.cmake")
   include("/home/mustar/RosCartAssistant/build/shopping_cart_assistant/cmake_install.cmake")
-  include("/home/mustar/RosCartAssistant/build/darknet_ros/darknet_ros_msgs/cmake_install.cmake")
-  include("/home/mustar/RosCartAssistant/build/darknet_ros/darknet_ros/cmake_install.cmake")
   include("/home/mustar/RosCartAssistant/build/yolo_ros_msgs/cmake_install.cmake")
 
 endif()
