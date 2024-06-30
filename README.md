@@ -26,7 +26,6 @@ If you are using the Jupiter Juno robot, you can install the required ROS packag
 sudo apt update
 sudo apt install xterm
 sudo apt install mpg321
-pip install -r requirements.txt # Make sure you have a requirements.txt with the necessary Python packages
 ```
 
 
@@ -35,6 +34,7 @@ Clone the repository:
 ```sh
 git clone https://github.com/Vanstage/RosCartAssistant.git
 cd RosCartAssistant
+pip install -r requirements.txt # Make sure you have a requirements.txt with the necessary Python packages
 ```
 
 Build the workspace:
